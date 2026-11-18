@@ -24,3 +24,4 @@ st.divider()
 st.write("Your Expense Tracker is ready!")
 
 st.balloons()
+
