@@ -13,7 +13,7 @@ def require_login():
         )
 
         st.page_link(
-            "app.py",
+            "auth_app.py",
             label="Go to Login",
             icon="🔐"
         )
