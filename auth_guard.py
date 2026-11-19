@@ -12,11 +12,8 @@ def require_login():
             "Please log in to access this page."
         )
 
-        st.page_link(
-            "auth_app.py",
-            label="Go to Login",
-            icon="🔐"
-        )
+        if st.button("🔐 Go to Login"):
+            st.switch_page("auth_app.py")
 
         st.stop()
 
