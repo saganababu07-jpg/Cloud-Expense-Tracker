@@ -30,11 +30,9 @@ show_header()
 # LOGIN AUTHENTICATION
 # -----------------------------------
 
-if "user" not in st.session_state or not st.session_state.user:
-    st.warning("Please log in to access this page.")
-    st.stop()
+from auth_guard import require_login
 
-user = st.session_state.user
+user = require_login()
 user_name = html.escape(str(user["name"]))
 
 

@@ -1,4 +1,5 @@
 
+import streamlit as st
 import bcrypt
 from database import get_connection
 
@@ -10,6 +11,8 @@ def register_user(name, email, password):
 
     if connection is None:
         return False, "Database connection failed."
+
+    cursor = None
 
     try:
         cursor = connection.cursor()
@@ -44,10 +47,12 @@ def register_user(name, email, password):
         return True, "Account created successfully!"
 
     except Exception as e:
+        connection.rollback()
         return False, f"Registration error: {e}"
 
     finally:
-        cursor.close()
+        if cursor:
+            cursor.close()
         connection.close()
 
 
@@ -83,3 +88,27 @@ def login_user(email, password):
     finally:
         cursor.close()
         connection.close()
+
+
+# Display successful login message
+def show_login_success(user):
+
+    st.markdown(
+        f"""
+        <h3 style="color: black;">
+            Successfully logged in as {user['name']}!
+        </h3>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Saving quote in black
+    st.markdown(
+        """
+        <h4 style="color: black;">
+            Do not save what is left after spending,
+            but spend what is left after saving.
+        </h4>
+        """,
+        unsafe_allow_html=True
+    )

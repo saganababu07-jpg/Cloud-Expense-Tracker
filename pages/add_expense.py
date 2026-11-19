@@ -1,27 +1,35 @@
-from style import apply_style, show_header
+
 import streamlit as st
+from style import apply_style, show_header
 from database import get_connection
 from datetime import date
 from decimal import Decimal
-apply_style()
-show_header()
+
 st.set_page_config(
     page_title="Add Expense",
     page_icon="💸",
     layout="centered"
 )
 
+apply_style()
+show_header()
+
+
 st.title("💸 Add New Expense")
 st.write("Record and manage your daily expenses.")
 
-# Check whether the user is logged in
-if "user" not in st.session_state or not st.session_state.user:
-    st.warning("Please log in to add expenses.")
-    st.stop()
+from auth_guard import require_login
 
-user = st.session_state.user
+user = require_login()
 
-st.success(f"Logged in as {user['name']}")
+st.markdown(
+    f"""
+    <h3 style="color: black;">
+        Successfully logged in as {user['name']}!
+    </h3>
+    """,
+    unsafe_allow_html=True
+)
 
 # Expense categories
 categories = [

@@ -5,6 +5,7 @@ import plotly.express as px
 
 from database import get_connection
 from style import apply_style, show_header
+from auth_guard import require_login
 
 
 st.set_page_config(
@@ -20,12 +21,8 @@ st.title("📊 Expense Dashboard")
 st.write("Welcome to your financial overview!")
 
 
-# Check login
-if "user" not in st.session_state or not st.session_state.user:
-    st.warning("Please log in to access your dashboard.")
-    st.stop()
-
-user = st.session_state.user
+# User Authentication
+user = require_login()
 user_id = user["user_id"]
 
 st.markdown(f"### Hello, {user['name']}! 👋")
@@ -119,7 +116,10 @@ if connection:
             st.plotly_chart(fig, use_container_width=True)
 
         else:
-            st.info("No expenses recorded yet. Add your first expense to see the chart.")
+            st.info(
+                "No expenses recorded yet. "
+                "Add your first expense to see the chart."
+            )
 
         # Financial summary
         st.divider()
@@ -131,12 +131,30 @@ if connection:
             st.metric("Starting Balance", "₹0.00")
 
         with summary_col2:
-            st.metric("Available Balance", f"₹{balance:,.2f}")
+            st.metric(
+                "Available Balance",
+                f"₹{balance:,.2f}"
+            )
 
+        # Financial status messages in black
         if balance < 0:
-            st.warning("Your expenses are greater than your available income.")
+            st.markdown(
+                """
+                <p style="color: black; font-weight: bold;">
+                    ⚠️ Your expenses are greater than your available income.
+                </p>
+                """,
+                unsafe_allow_html=True
+            )
         else:
-            st.success("Your financial summary is up to date!")
+            st.markdown(
+                """
+                <p style="color: black; font-weight: bold;">
+                    Your financial summary is up to date!
+                </p>
+                """,
+                unsafe_allow_html=True
+            )
 
         cursor.close()
 
@@ -147,4 +165,7 @@ if connection:
         connection.close()
 
 else:
-    st.error("Could not connect to the database. Please check your MySQL connection.")
+    st.error(
+        "Could not connect to the database. "
+        "Please check your MySQL connection."
+    )
