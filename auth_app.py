@@ -294,3 +294,4 @@ def render_auth_app():
 
                     else:
                         st.error(message)
+render_auth_app()
